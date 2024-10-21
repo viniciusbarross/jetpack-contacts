@@ -2,6 +2,7 @@ package  com.example.appcontatos.ui.contact.list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -59,46 +60,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun ContactsListScreen(
     modifier: Modifier = Modifier,
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     onAddPressed :()-> Unit,
-    onContactPressed:(Contact)-> Unit
+    onContactPressed:(Contact)-> Unit,
+    viewModel: ContactsListViewModel = viewModel()
 ) {
-    var uiState : ContactsListUiState by remember { mutableStateOf(ContactsListUiState(isInitialComposition = true)) }
-
-    val loadContacts: () -> Unit = {
-        uiState = uiState.copy(
-            isLoading = true,
-            hasError = false,
-            isInitialComposition = false
-        )
-
-        coroutineScope.launch {
-            delay(2000)
-            val contacts : List<Contact> = ContactDatasource.instance.findAll();
-            uiState = uiState.copy(
-                contacts = contacts.groupByInitial(),
-                isLoading = false
-            )
-        }
-    }
-
-    if(uiState.isInitialComposition){
-        loadContacts()
-    }
-
-    val toggleFavorite:(Contact) -> Unit = { contact ->
-        val updatedContact = contact.copy(isFavorite = !contact.isFavorite)
-        ContactDatasource.instance.save(updatedContact)
-        val contacts : List<Contact> = ContactDatasource.instance.findAll();
-        uiState = uiState.copy(
-            contacts = contacts.groupByInitial()
-        )
-    }
-
     val contentModifier = modifier.fillMaxSize()
-    if (uiState.isLoading){
+    if (viewModel.uiState.isLoading){
         DefaultLoadingContent()
-    }else if (uiState.hasError){
+    }else if (viewModel.uiState.hasError){
         DefaultErrorContent(
             modifier = contentModifier,
             onTryAgainPressed = {}
@@ -107,7 +76,7 @@ fun ContactsListScreen(
         Scaffold(
             modifier = modifier.fillMaxSize(),
             topBar = { AppBar(
-                onRefreshPressed = loadContacts
+                onRefreshPressed = viewModel::loadContacts
             ) },
             floatingActionButton = {
                 ExtendedFloatingActionButton(onClick = onAddPressed) {
@@ -124,13 +93,13 @@ fun ContactsListScreen(
 
 
         val defaultModifier = Modifier.padding(paddingValues)
-         if(uiState.contacts.isEmpty()){
+         if(viewModel.uiState.contacts.isEmpty()){
             EmptyList(modifier = modifier)
         }else {
              List(
                  modifier = defaultModifier,
-                 contacts = uiState.contacts,
-                 onFavoritePressed = toggleFavorite,
+                 contacts = viewModel.uiState.contacts,
+                 onFavoritePressed = viewModel::toggleFavorite,
                  onContactPressed = onContactPressed
              )
          }

@@ -3,6 +3,7 @@ package com.example.appcontatos.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.internal.composableLambda
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -63,10 +64,18 @@ fun AppContacts(
                     },
                     onEditPressed = {},
                     onContactDeleted = {
-                        navController.popBackStack()
+                       navigateToList(navController)
                     }
                 )
             }
+        }
+    }
+}
+
+private fun navigateToList(navController: NavHostController){
+    navController.navigate(Screens.CONTACTS_LIST){
+        popUpTo(navController.graph.findStartDestination().id){
+            inclusive = true
         }
     }
 }
