@@ -8,4 +8,16 @@
     <string name="no_data">Nada por aqui...</string>
     <string name="no_data_hint">Voce ainda não adicionou nenhum contato.\nAdicione o primeiro utilizando o botão \"Novo contato\"</string>
     <string name="refresh">Atualizar</string>
+    <string name="editar">Editar</string>
+    <string name="favoritar">Favoritar</string>
+    <string name="excluir">Excluir</string>
+    <string name="ligar">Ligar</string>
+    <string name="texto">Texto</string>
+    <string name="video">video</string>
+    <string name="email">email</string>
+    <string name="inf_contato">Informaçoes de contato</string>
+    <string name="carregando">carregando</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="cancelar">cancelar</string>
+    <string name="confirmar_contato_remover">"Esse contato será removido permanentemente. "</string>
 </resources>
