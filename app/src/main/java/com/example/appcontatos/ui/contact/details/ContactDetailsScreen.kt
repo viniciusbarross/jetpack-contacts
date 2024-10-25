@@ -54,6 +54,7 @@ import com.example.appcontatos.R
 import com.example.appcontatos.data.Contact
 import com.example.appcontatos.data.ContactDatasource
 import com.example.appcontatos.data.groupByInitial
+import com.example.appcontatos.ui.contact.form.toFormattedPhone
 import com.example.appcontatos.ui.theme.AppContatosTheme
 import com.example.appcontatos.ui.utils.composables.ContactAvatar
 import com.example.appcontatos.ui.utils.composables.DefaultErrorContent
@@ -342,14 +343,14 @@ fun ContactDetails(
             )
             ContactInfo(
                 imageVector = Icons.Outlined.Phone,
-                value = contact.phoneNumber.ifBlank { "Adicionar número de telefone" },
+                value = contact.phoneNumber.toFormattedPhone().ifBlank { "Adicionar número de telefone" },
                 enabled = contact.phoneNumber.isBlank() && !isDeleting,
                 onPressed = onEditPressed
             )
             ContactInfo(
                 imageVector = Icons.Outlined.Email,
-                value = contact.phoneNumber.ifBlank { "Adicionar e-mail" },
-                enabled = contact.phoneNumber.isBlank() && !isDeleting,
+                value = contact.email.ifBlank { "Adicionar e-mail" },
+                enabled = contact.email.isBlank() && !isDeleting,
                 onPressed = onEditPressed
             )
 

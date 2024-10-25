@@ -12,20 +12,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.appcontatos.ui.contact.details.ContactDetailsScreen
+import com.example.appcontatos.ui.contact.form.ContactFormScreen
 import com.example.appcontatos.ui.contact.list.ContactsListScreen
 
 private object Screens{
     const val CONTACTS_LIST = "constactsList"
     const val CONTACT_DETAILS = "contactDetails"
+    const val CONTACT_FORM = "contactForm"
 }
 
-private object Arguments{
+object Arguments{
     const val CONTACT_ID = "contactId"
 }
 
 private object Routes{
     const val CONTACTS_LIST = Screens.CONTACTS_LIST
     const val CONTACT_DETAILS = "${Screens.CONTACT_DETAILS}/{${Arguments.CONTACT_ID}}"
+    const val CONTACT_FORM = "${Screens.CONTACT_FORM}?${Arguments.CONTACT_ID}={${Arguments.CONTACT_ID}"
 }
 
 @Composable
@@ -42,6 +45,7 @@ fun AppContacts(
         composable(route = Routes.CONTACTS_LIST){
             ContactsListScreen(
                 onAddPressed = {
+                    navController.navigate(Screens.CONTACT_FORM)
                 },
                 onContactPressed = {
                     contact ->
@@ -62,20 +66,35 @@ fun AppContacts(
                     onBackPressed = {
                         navController.popBackStack()
                     },
-                    onEditPressed = {},
+                    onEditPressed = {navController.navigate("${Screens.CONTACT_FORM}?${Arguments.CONTACT_ID}=$contactId")},
                     onContactDeleted = {
-                       navigateToList(navController)
+                        navController.popBackStack(
+                            route = Screens.CONTACTS_LIST,
+                            inclusive = false
+                        )
                     }
                 )
             }
         }
-    }
-}
-
-private fun navigateToList(navController: NavHostController){
-    navController.navigate(Screens.CONTACTS_LIST){
-        popUpTo(navController.graph.findStartDestination().id){
-            inclusive = true
+        composable(
+            route = Routes.CONTACT_FORM,
+            arguments = listOf(
+                navArgument(name = Arguments.CONTACT_ID){
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )
+        ){
+            ContactFormScreen(
+                onContactSaved = {
+                    navController.popBackStack(
+                        route = Screens.CONTACTS_LIST,
+                        inclusive = false
+                    )
+                },
+                onBackPressed = {  navController.popBackStack() }
+            )
         }
     }
 }
+
